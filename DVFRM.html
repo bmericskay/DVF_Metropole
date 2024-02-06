@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="B. Mericskay et F. Demoraes">
+<meta name="dcterms.date" content="2024-01-01">
+
+<title>DVFRM</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="DVFRM_files/libs/clipboard/clipboard.min.js"></script>
+<script src="DVFRM_files/libs/quarto-html/quarto.js"></script>
+<script src="DVFRM_files/libs/quarto-html/popper.min.js"></script>
+<script src="DVFRM_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="DVFRM_files/libs/quarto-html/anchor.min.js"></script>
+<link href="DVFRM_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="DVFRM_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="DVFRM_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="DVFRM_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="DVFRM_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#analyse-des-données-dvf-à-lechelle-locale" id="toc-analyse-des-données-dvf-à-lechelle-locale" class="nav-link active" data-scroll-target="#analyse-des-données-dvf-à-lechelle-locale">Analyse des données DVF à l’echelle locale</a>
+  <ul class="collapse">
+  <li><a href="#chargement-des-packages" id="toc-chargement-des-packages" class="nav-link" data-scroll-target="#chargement-des-packages">Chargement des packages</a></li>
+  <li><a href="#intégration-des-données" id="toc-intégration-des-données" class="nav-link" data-scroll-target="#intégration-des-données">Intégration des données</a></li>
+  </ul></li>
+  <li><a href="#préparation-des-données-dvf" id="toc-préparation-des-données-dvf" class="nav-link" data-scroll-target="#préparation-des-données-dvf">Préparation des données DVF</a>
+  <ul class="collapse">
+  <li><a href="#nettoyage-des-données-et-supression-des-mutations-multiventes" id="toc-nettoyage-des-données-et-supression-des-mutations-multiventes" class="nav-link" data-scroll-target="#nettoyage-des-données-et-supression-des-mutations-multiventes">Nettoyage des données et supression des mutations multiventes</a></li>
+  <li><a href="#supression-des-valeurs-aberrantes" id="toc-supression-des-valeurs-aberrantes" class="nav-link" data-scroll-target="#supression-des-valeurs-aberrantes">Supression des <strong>valeurs aberrantes</strong></a></li>
+  <li><a href="#enrichissement-des-données" id="toc-enrichissement-des-données" class="nav-link" data-scroll-target="#enrichissement-des-données">Enrichissement des données</a></li>
+  <li><a href="#ecriture-du-fichier-des-mutations-dvf-de-rennes-métropole" id="toc-ecriture-du-fichier-des-mutations-dvf-de-rennes-métropole" class="nav-link" data-scroll-target="#ecriture-du-fichier-des-mutations-dvf-de-rennes-métropole">Ecriture du fichier des mutations DVF de Rennes Métropole</a></li>
+  </ul></li>
+  <li><a href="#analyses-exploratoires" id="toc-analyses-exploratoires" class="nav-link" data-scroll-target="#analyses-exploratoires">Analyses exploratoires</a>
+  <ul class="collapse">
+  <li><a href="#indicateurs-génériques" id="toc-indicateurs-génériques" class="nav-link" data-scroll-target="#indicateurs-génériques">Indicateurs génériques</a>
+  <ul class="collapse">
+  <li><a href="#tableau-récapitulatif" id="toc-tableau-récapitulatif" class="nav-link" data-scroll-target="#tableau-récapitulatif">Tableau récapitulatif</a></li>
+  <li><a href="#analyse-par-année" id="toc-analyse-par-année" class="nav-link" data-scroll-target="#analyse-par-année">Analyse par année</a></li>
+  <li><a href="#evolution-des-volumes-de-vente-par-année" id="toc-evolution-des-volumes-de-vente-par-année" class="nav-link" data-scroll-target="#evolution-des-volumes-de-vente-par-année">Evolution des volumes de vente par année</a></li>
+  <li><a href="#boxplot-des-prix-selon-la-commune-et-le-type-de-bien" id="toc-boxplot-des-prix-selon-la-commune-et-le-type-de-bien" class="nav-link" data-scroll-target="#boxplot-des-prix-selon-la-commune-et-le-type-de-bien">Boxplot des prix selon la commune et le type de bien</a></li>
+  <li><a href="#evolution-des-prix-de-vente-par-année" id="toc-evolution-des-prix-de-vente-par-année" class="nav-link" data-scroll-target="#evolution-des-prix-de-vente-par-année">Evolution des prix de vente par année</a></li>
+  <li><a href="#evolution-des-prix-de-vente-au-m2-par-année" id="toc-evolution-des-prix-de-vente-au-m2-par-année" class="nav-link" data-scroll-target="#evolution-des-prix-de-vente-au-m2-par-année">Evolution des prix de vente au m2 par année</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#analyse-spatiale" id="toc-analyse-spatiale" class="nav-link" data-scroll-target="#analyse-spatiale">Analyse spatiale</a>
+  <ul class="collapse">
+  <li><a href="#agrégations-spatiales" id="toc-agrégations-spatiales" class="nav-link" data-scroll-target="#agrégations-spatiales">Agrégations spatiales</a>
+  <ul class="collapse">
+  <li><a href="#spatialisation-des-mutations" id="toc-spatialisation-des-mutations" class="nav-link" data-scroll-target="#spatialisation-des-mutations">Spatialisation des mutations</a></li>
+  <li><a href="#chargement-des-couches-danalyse-agrégation" id="toc-chargement-des-couches-danalyse-agrégation" class="nav-link" data-scroll-target="#chargement-des-couches-danalyse-agrégation">Chargement des couches d’analyse (agrégation)</a></li>
+  <li><a href="#ecriture-des-gpkg-pour-un-usage-dans-un-sig" id="toc-ecriture-des-gpkg-pour-un-usage-dans-un-sig" class="nav-link" data-scroll-target="#ecriture-des-gpkg-pour-un-usage-dans-un-sig">Ecriture des gpkg pour un usage dans un SIG</a></li>
+  </ul></li>
+  <li><a href="#cartographie-thématique" id="toc-cartographie-thématique" class="nav-link" data-scroll-target="#cartographie-thématique">Cartographie thématique</a>
+  <ul class="collapse">
+  <li><a href="#cartographie-à-léchelle-des-iris" id="toc-cartographie-à-léchelle-des-iris" class="nav-link" data-scroll-target="#cartographie-à-léchelle-des-iris">Cartographie à l’échelle des IRIS</a></li>
+  <li><a href="#cartographie-à-léchelle-des-sections-cadastrales" id="toc-cartographie-à-léchelle-des-sections-cadastrales" class="nav-link" data-scroll-target="#cartographie-à-léchelle-des-sections-cadastrales">Cartographie à l’échelle des sections cadastrales</a></li>
+  </ul></li>
+  <li><a href="#lissage-spatial-des-mutations" id="toc-lissage-spatial-des-mutations" class="nav-link" data-scroll-target="#lissage-spatial-des-mutations">Lissage spatial des mutations</a>
+  <ul class="collapse">
+  <li><a href="#lissage-spatial-de-toutes-les-mutations-de-la-période" id="toc-lissage-spatial-de-toutes-les-mutations-de-la-période" class="nav-link" data-scroll-target="#lissage-spatial-de-toutes-les-mutations-de-la-période">Lissage spatial de toutes les mutations de la période</a></li>
+  <li><a href="#calcul-des-indicateurs-pour-paramétrer-le-lissage" id="toc-calcul-des-indicateurs-pour-paramétrer-le-lissage" class="nav-link" data-scroll-target="#calcul-des-indicateurs-pour-paramétrer-le-lissage">Calcul des indicateurs pour paramétrer le lissage</a></li>
+  <li><a href="#cartographie-du-lissage-spatial" id="toc-cartographie-du-lissage-spatial" class="nav-link" data-scroll-target="#cartographie-du-lissage-spatial">Cartographie du lissage spatial</a></li>
+  <li><a href="#lissage-spatial-par-années" id="toc-lissage-spatial-par-années" class="nav-link" data-scroll-target="#lissage-spatial-par-années">Lissage spatial par années</a></li>
+  <li><a href="#série-de-cartes-lissées" id="toc-série-de-cartes-lissées" class="nav-link" data-scroll-target="#série-de-cartes-lissées">Série de cartes lissées</a></li>
+  </ul></li>
+  <li><a href="#classification-statistique" id="toc-classification-statistique" class="nav-link" data-scroll-target="#classification-statistique">Classification statistique</a>
+  <ul class="collapse">
+  <li><a href="#préparation-du-jeu-de-données" id="toc-préparation-du-jeu-de-données" class="nav-link" data-scroll-target="#préparation-du-jeu-de-données">Préparation du jeu de données</a></li>
+  <li><a href="#variables-centrées-réduites" id="toc-variables-centrées-réduites" class="nav-link" data-scroll-target="#variables-centrées-réduites">Variables centrées-réduites</a></li>
+  <li><a href="#réalisez-lacp" id="toc-réalisez-lacp" class="nav-link" data-scroll-target="#réalisez-lacp">Réalisez l’ACP</a></li>
+  <li><a href="#réalisez-une-cah-sur-les-composantes-principales-cp" id="toc-réalisez-une-cah-sur-les-composantes-principales-cp" class="nav-link" data-scroll-target="#réalisez-une-cah-sur-les-composantes-principales-cp">Réalisez une CAH sur les composantes principales (CP)</a></li>
+  <li><a href="#afficher-le-dendrogramme-le-résultat-de-la-cah" id="toc-afficher-le-dendrogramme-le-résultat-de-la-cah" class="nav-link" data-scroll-target="#afficher-le-dendrogramme-le-résultat-de-la-cah">Afficher le dendrogramme (le résultat de la CAH)</a></li>
+  <li><a href="#tableau-reapitulatif-des-groupes" id="toc-tableau-reapitulatif-des-groupes" class="nav-link" data-scroll-target="#tableau-reapitulatif-des-groupes">Tableau reapitulatif des groupes</a></li>
+  <li><a href="#graphique-de-variations-à-la-moyenne" id="toc-graphique-de-variations-à-la-moyenne" class="nav-link" data-scroll-target="#graphique-de-variations-à-la-moyenne">Graphique de variations à la moyenne</a></li>
+  <li><a href="#cartographie-de-la-cah" id="toc-cartographie-de-la-cah" class="nav-link" data-scroll-target="#cartographie-de-la-cah">Cartographie de la CAH</a></li>
+  </ul></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">DVFRM</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>B. Mericskay et F. Demoraes </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 1, 2024</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="analyse-des-données-dvf-à-lechelle-locale" class="level1">
+<h1>Analyse des données DVF à l’echelle locale</h1>
+<p>Ce notebook (fait avec Quarto) présente une chaîne de traitements dédiée à la préparation des données DVF en <em>open data</em> formalisée dans l’environnement R et documentée dans un souci de reproductibilité.</p>
+<p>Il se concentre sur l’exploration et l’analyse des<a href="https://www.data.gouv.fr/fr/datasets/demandes-de-valeurs-foncieres-geolocalisees/">données DVF disponibles en opendata</a> à l’échelle de Rennes Métropole.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://journals.openedition.org/cybergeo/docannexe/image/39583/img-20.png" class="img-fluid figure-img" width="499"></p>
+</figure>
+</div>
+<section id="chargement-des-packages" class="level2">
+<h2 class="anchored" data-anchor-id="chargement-des-packages">Chargement des packages</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapsf) <span class="co">#Cartographie thématique</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spdep) <span class="co"># pour calculer l'auto-corrélation spatiale</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(geoR) <span class="co"># pour calculer le semi-variogramme empirique</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(spatstat) <span class="co"># pour produire des surfaces lissées</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra) <span class="co"># pour le traitement de données matricielles (raster)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(FactoMineR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="intégration-des-données" class="level2">
+<h2 class="anchored" data-anchor-id="intégration-des-données">Intégration des données</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>DVF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"C:/Users/mericskay_b/Dropbox/Atlas Rennes/DVFRM/SourceDVF/merged.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="préparation-des-données-dvf" class="level1">
+<h1>Préparation des données DVF</h1>
+<section id="nettoyage-des-données-et-supression-des-mutations-multiventes" class="level3">
+<h3 class="anchored" data-anchor-id="nettoyage-des-données-et-supression-des-mutations-multiventes">Nettoyage des données et supression des mutations multiventes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>etape1 <span class="ot">&lt;-</span> DVF <span class="sc">%&gt;%</span> <span class="fu">filter</span>(nature_mutation <span class="sc">==</span> <span class="st">"Vente"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>etape1bis <span class="ot">&lt;-</span> etape1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type_local <span class="sc">==</span> <span class="st">"Maison"</span> <span class="sc">|</span> type_local <span class="sc">==</span> <span class="st">"Appartement"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>etape2 <span class="ot">&lt;-</span> etape1bis <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="at">id =</span> id_mutation, <span class="at">disposition =</span> numero_disposition, <span class="at">parcelle=</span> id_parcelle, <span class="at">date =</span> date_mutation, <span class="at">nature =</span> nature_mutation, <span class="at">codecommune =</span> code_commune, <span class="at">departement =</span> code_departement, <span class="at">type =</span> type_local, <span class="at">surface =</span> surface_reelle_bati, <span class="at">piece =</span> nombre_pieces_principales, <span class="at">prix =</span> valeur_fonciere, latitude, longitude)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>etape2[etape2<span class="sc">==</span><span class="st">""</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>etape3 <span class="ot">&lt;-</span> etape2 <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>unique <span class="ot">&lt;-</span> etape3 <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(id, prix, surface)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>nbunique <span class="ot">&lt;-</span> unique <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(id) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">nb =</span> <span class="fu">n</span>())</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>etape4 <span class="ot">&lt;-</span> nbunique <span class="sc">%&gt;%</span> <span class="fu">filter</span>(nb<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>merge <span class="ot">&lt;-</span> <span class="fu">merge</span>(etape4,etape3, <span class="at">by=</span><span class="st">"id"</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>etape5 <span class="ot">&lt;-</span> merge <span class="sc">%&gt;%</span> <span class="fu">distinct</span>(id, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(id, date, type, nature, codecommune, prix, surface, piece, latitude, longitude)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>etape5<span class="sc">$</span>prix <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(etape5<span class="sc">$</span>prix)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>etape5<span class="sc">$</span>surface <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(etape5<span class="sc">$</span>surface)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>etape5<span class="sc">$</span>piece <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(etape5<span class="sc">$</span>piece)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="supression-des-valeurs-aberrantes" class="level3">
+<h3 class="anchored" data-anchor-id="supression-des-valeurs-aberrantes">Supression des <strong>valeurs aberrantes</strong></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(etape5<span class="sc">$</span>prix, <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   1% 
+20000 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="dv">999</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(etape5<span class="sc">$</span>prix)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+       1   112235   168590   201755   246000 22200000 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(etape5<span class="sc">$</span>prix, <span class="at">breaks =</span> <span class="dv">50000</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">15000</span>,<span class="dv">1000000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>Maisons <span class="ot">&lt;-</span> etape5 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'Maison'</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>Appartement <span class="ot">&lt;-</span> etape5 <span class="sc">%&gt;%</span> <span class="fu">filter</span> (type <span class="sc">==</span> <span class="st">'Appartement'</span>)   </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(Maisons<span class="sc">$</span>surface, <span class="at">nclass =</span> <span class="dv">500</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">600</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-4-2.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(Appartement<span class="sc">$</span>surface, <span class="at">nclass =</span> <span class="dv">500</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">300</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-4-3.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>etape6 <span class="ot">&lt;-</span> etape5 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">between</span>(prix, <span class="dv">15000</span>, <span class="dv">5000000</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">case_when</span>(type<span class="sc">==</span><span class="st">'Appartement'</span> <span class="sc">~</span>  <span class="fu">between</span>(surface, <span class="dv">10</span>, <span class="dv">200</span>)) <span class="sc">|</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">case_when</span>(type<span class="sc">==</span><span class="st">'Maison'</span> <span class="sc">~</span>  <span class="fu">between</span>(surface, <span class="dv">10</span>, <span class="dv">300</span>)))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>etape7 <span class="ot">&lt;-</span> etape6 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">prixm2 =</span> prix<span class="sc">/</span>surface)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(etape7<span class="sc">$</span>prixm2, <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      1% 
+443.8872 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(etape7<span class="sc">$</span>prixm2, <span class="at">breaks =</span> <span class="dv">1000</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">10000</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-4-4.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>etape8 <span class="ot">&lt;-</span> etape7 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="fu">between</span>(prixm2,<span class="dv">400</span>,<span class="dv">8000</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>etape8<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="fu">as.character</span>(etape8<span class="sc">$</span>date)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>etape8 <span class="ot">&lt;-</span> etape8 <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">annee =</span> <span class="fu">substr</span>(etape8<span class="sc">$</span>date, <span class="dv">1</span>, <span class="dv">4</span>))</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>etape8<span class="sc">$</span>annee <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(etape8<span class="sc">$</span>annee)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>etape8<span class="sc">$</span>prix <span class="ot">&lt;-</span> <span class="fu">round</span>(etape8<span class="sc">$</span>prix)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>etape8<span class="sc">$</span>prixm2 <span class="ot">&lt;-</span> <span class="fu">round</span>(etape8<span class="sc">$</span>prixm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="enrichissement-des-données" class="level3">
+<h3 class="anchored" data-anchor-id="enrichissement-des-données">Enrichissement des données</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>COG <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"C:/Users/mericskay_b/Dropbox/Atlas Rennes/DVFRM/data/COG.csv"</span>, <span class="at">sep=</span><span class="st">","</span>, <span class="at">encoding=</span><span class="st">"UTF-8"</span>, <span class="at">stringsAsFactors=</span><span class="cn">FALSE</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>COG <span class="ot">&lt;-</span> COG <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">codecommune =</span> CODGEO)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>etape9 <span class="ot">&lt;-</span> <span class="fu">merge</span>(etape8, COG, <span class="st">"codecommune"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>DVFOK <span class="ot">&lt;-</span> etape9</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="ne-garder-que-le-dataframe-nécessaire" class="level4">
+<h4 class="anchored" data-anchor-id="ne-garder-que-le-dataframe-nécessaire">Ne garder que le dataframe nécessaire</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list=</span><span class="fu">setdiff</span>(<span class="fu">ls</span>(), <span class="fu">c</span>(<span class="st">"DVFOK"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="selection-de-lepci-etudié" class="level4">
+<h4 class="anchored" data-anchor-id="selection-de-lepci-etudié">Selection de l’EPCI etudié</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>DVF <span class="ot">&lt;-</span> DVFOK <span class="sc">%&gt;%</span> <span class="fu">filter</span>(LIBEPCI <span class="sc">==</span> <span class="st">'Rennes Métropole'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="ecriture-du-fichier-des-mutations-dvf-de-rennes-métropole" class="level3">
+<h3 class="anchored" data-anchor-id="ecriture-du-fichier-des-mutations-dvf-de-rennes-métropole">Ecriture du fichier des mutations DVF de Rennes Métropole</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(DVFOK, <span class="st">"C:/Users/mericskay_b/desktop/DVFRM.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="analyses-exploratoires" class="level1">
+<h1>Analyses exploratoires</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>DVF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"C:/Users/mericskay_b/Desktop/R/DVF/DVFRM.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="indicateurs-génériques" class="level2">
+<h2 class="anchored" data-anchor-id="indicateurs-génériques">Indicateurs génériques</h2>
+<section id="tableau-récapitulatif" class="level3">
+<h3 class="anchored" data-anchor-id="tableau-récapitulatif">Tableau récapitulatif</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>RecapRM <span class="ot">&lt;-</span> DVF <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(type) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summarise</span>(<span class="at">tot =</span> <span class="fu">n</span> (), <span class="at">prixmed =</span> <span class="fu">median</span>(prix), <span class="at">prixmoy =</span> <span class="fu">mean</span>(prix), <span class="at">surfmed =</span> <span class="fu">median</span>(surface), <span class="at">surfmoy =</span> <span class="fu">mean</span>(surface), <span class="at">prixm2med =</span> <span class="fu">median</span>(prixm2), <span class="at">prixm2moy =</span> <span class="fu">mean</span>(prixm2))</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>RecapRM <span class="ot">&lt;-</span> RecapRM <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">part =</span> (tot<span class="sc">/</span><span class="fu">sum</span>(tot)<span class="sc">*</span><span class="dv">100</span>))</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(RecapRM)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 9
+  type          tot prixmed prixmoy surfmed surfmoy prixm2med prixm2moy  part
+  &lt;chr&gt;       &lt;int&gt;   &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt; &lt;dbl&gt;
+1 Appartement 36655  145000 163681.      62    59.5      2671     2857.  65.7
+2 Maison      19175  280000 313257.     105   111.       2628     2885.  34.3</code></pre>
+</div>
+</div>
+</section>
+<section id="analyse-par-année" class="level3">
+<h3 class="anchored" data-anchor-id="analyse-par-année">Analyse par année</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>DVFRMdf <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(DVF) </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>anneeRM <span class="ot">&lt;-</span> DVFRMdf <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(annee, LIBGEO) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">nb=</span> <span class="fu">n</span>(), <span class="at">prix =</span> <span class="fu">mean</span>(prix), <span class="at">prixm2 =</span> <span class="fu">mean</span>(prixm2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`summarise()` has grouped output by 'annee'. You can override using the
+`.groups` argument.</code></pre>
+</div>
+</div>
+</section>
+<section id="evolution-des-volumes-de-vente-par-année" class="level3">
+<h3 class="anchored" data-anchor-id="evolution-des-volumes-de-vente-par-année">Evolution des volumes de vente par année</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="distribution-des-prix-de-vente-en-fonction-du-type-de-mutation" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-des-prix-de-vente-en-fonction-du-type-de-mutation">Distribution des prix de vente en fonction du type de mutation</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distribution-des-prix-de-vente-au-m2-en-fonction-du-type-de-mutation" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-des-prix-de-vente-au-m2-en-fonction-du-type-de-mutation">Distribution des prix de vente au m2 en fonction du type de mutation</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(DVF, <span class="fu">aes</span>(<span class="at">x =</span> prixm2, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>)) <span class="sc">+</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)) <span class="sc">+</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Prix au m²"</span>) <span class="sc">+</span>  <span class="fu">ylab</span>(<span class="st">"Effectifs"</span>) <span class="sc">+</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>type) <span class="sc">+</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="distribution-des-surface-en-fonction-du-type-de-mutation" class="level4">
+<h4 class="anchored" data-anchor-id="distribution-des-surface-en-fonction-du-type-de-mutation">Distribution des surface en fonction du type de mutation</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(DVF, <span class="fu">aes</span>(<span class="at">x =</span> surface, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">6</span>)) <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)) <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Prix au m²"</span>) <span class="sc">+</span>  <span class="fu">ylab</span>(<span class="st">"Effectifs"</span>) <span class="sc">+</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>type) <span class="sc">+</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="boxplot-des-prix-selon-la-commune-et-le-type-de-bien" class="level3">
+<h3 class="anchored" data-anchor-id="boxplot-des-prix-selon-la-commune-et-le-type-de-bien">Boxplot des prix selon la commune et le type de bien</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(DVF, <span class="fu">aes</span>(<span class="at">x =</span> LIBGEO, <span class="at">y =</span> prixm2, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Prix"</span>) <span class="sc">+</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>type) <span class="sc">+</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.x =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.title.y =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"italic"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="evolution-des-prix-de-vente-par-année" class="level3">
+<h3 class="anchored" data-anchor-id="evolution-des-prix-de-vente-par-année">Evolution des prix de vente par année</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="evolution-des-prix-de-vente-au-m2-par-année" class="level3">
+<h3 class="anchored" data-anchor-id="evolution-des-prix-de-vente-au-m2-par-année">Evolution des prix de vente au m2 par année</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="analyse-spatiale" class="level1">
+<h1>Analyse spatiale</h1>
+<section id="agrégations-spatiales" class="level2">
+<h2 class="anchored" data-anchor-id="agrégations-spatiales">Agrégations spatiales</h2>
+<p>L'exploration spatiale des données DVF sur des périmètres plus restreints peut être envisagée selon différents référentiels d'analyse (communes, IRIS, sections cadastrales, maillage, etc.). Nous avons fait le choix de travailler sur deux découpages du territoire métropolitain, l'un d'origine statistique, l'autre fiscale.</p>
+<p>D'un côté les <strong>IRIS</strong> au nombre de 172, correspondent à un échelon pivot qui permet de croiser les données DVF avec d'autres variables de l'Insee notamment (revenu, âge, CSP, etc.). De l'autre, les <strong>sections cadastrales</strong>, au nombre de 835, constituent un autre échelon d'analyse pertinent car ce découpage possède un lien direct avec l'objet d'étude (les dynamiques immobilières).</p>
+<section id="spatialisation-des-mutations" class="level3">
+<h3 class="anchored" data-anchor-id="spatialisation-des-mutations">Spatialisation des mutations</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>DVFgeo<span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(DVF, <span class="at">coords=</span><span class="fu">c</span>(<span class="st">"longitude"</span>,<span class="st">"latitude"</span>), <span class="at">crs=</span><span class="dv">4326</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">st_geometry</span>(DVFgeo), <span class="at">pch =</span> <span class="dv">3</span>, <span class="at">cex =</span> <span class="fl">0.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>DVFgeo<span class="ot">&lt;-</span> <span class="fu">st_transform</span>(DVFgeo, <span class="dv">2154</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="ecrire-le-gpkg-pour-un-usage-dans-un-logiciel-sig" class="level4">
+<h4 class="anchored" data-anchor-id="ecrire-le-gpkg-pour-un-usage-dans-un-logiciel-sig">Ecrire le GPKG pour un usage dans un logiciel SIG</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#st_write(DVFgeo, "DVFgeoRM.gpkg", append = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="chargement-des-couches-danalyse-agrégation" class="level3">
+<h3 class="anchored" data-anchor-id="chargement-des-couches-danalyse-agrégation">Chargement des couches d’analyse (agrégation)</h3>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `IRISBZH' from data source 
+  `C:\Users\mericskay_b\Dropbox\Atlas Rennes\DVFRM\data\IRISBZH.geojson' 
+  using driver `GeoJSON'
+Simple feature collection with 1742 features and 31 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -5.141277 ymin: 47.27789 xmax: -1.015613 ymax: 48.90097
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Communes' from data source 
+  `C:\Users\mericskay_b\Dropbox\Atlas Rennes\DVFRM\data\Communes.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 1208 features and 12 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 99040 ymin: 6704161 xmax: 400665.5 ymax: 6886001
+Projected CRS: RGF93 v1 / Lambert-93</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `Sectionscadastrales' from data source 
+  `C:\Users\mericskay_b\Dropbox\Atlas Rennes\DVFRM\data\Sectionscadastrales.shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 835 features and 6 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 330653.1 ymin: 6769731 xmax: 367908.1 ymax: 6812018
+Projected CRS: RGF93 v1 / Lambert-93</code></pre>
+</div>
+</div>
+<section id="choix-de-la-couche-des-communes" class="level4">
+<h4 class="anchored" data-anchor-id="choix-de-la-couche-des-communes">Choix de la couche des communes</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>Communes <span class="ot">&lt;-</span> Communes <span class="sc">%&gt;%</span> <span class="fu">filter</span>(CODE_EPCI<span class="sc">==</span><span class="dv">243500139</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>IRIS <span class="ot">&lt;-</span> IRIS <span class="sc">%&gt;%</span> <span class="fu">filter</span>(epci_code<span class="sc">==</span><span class="dv">243500139</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="agrégations-spatiales-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="agrégations-spatiales-par-iris">Agrégations spatiales par IRIS</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul d'indicateurs par IRIS</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>IRISDVF <span class="ot">&lt;-</span> IRIS <span class="sc">%&gt;%</span> <span class="fu">st_join</span>(DVFgeo) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(iris_code) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Prixm2 =</span> <span class="fu">mean</span>(prixm2), <span class="at">Prix =</span> <span class="fu">mean</span>(prix), <span class="at">Surface =</span> <span class="fu">mean</span>(surface))</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul du nombre de mutations par IRIS</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>IRISDVF <span class="ot">&lt;-</span> IRISDVF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Nbmutations =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(IRISDVF, DVFgeo)))</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>IRISDVF <span class="ot">&lt;-</span> IRISDVF <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="co"># pour supprimer les valeurs manquantes</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>Maisons <span class="ot">&lt;-</span> DVFgeo <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'Maison'</span>)</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>Appartements <span class="ot">&lt;-</span> DVFgeo <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"Appartement"</span>)</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>IRISDVF <span class="ot">&lt;-</span> IRISDVF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">NbMaisons =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(IRISDVF, Maisons))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">NbAppart =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(IRISDVF, Appartements)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="agrégations-spatiales-par-section-cadastrale" class="level4">
+<h4 class="anchored" data-anchor-id="agrégations-spatiales-par-section-cadastrale">Agrégations spatiales par section cadastrale</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul du prix moyen au m² par section cadastrale</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>Sections<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.character</span>(Sections<span class="sc">$</span>id) </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>Sections <span class="ot">&lt;-</span> Sections <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">codesection =</span> id)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>SectionsDVF <span class="ot">&lt;-</span> Sections <span class="sc">%&gt;%</span> <span class="fu">st_join</span>(DVFgeo) <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(codesection) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Prixm2 =</span> <span class="fu">mean</span>(prixm2), <span class="at">Prix =</span> <span class="fu">mean</span>(prix))</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>SectionsDVF <span class="ot">&lt;-</span> SectionsDVF <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() <span class="co"># pour supprimer les valeurs manquantes</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul du nombre de mutations par section</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>SectionsDVF <span class="ot">&lt;-</span> SectionsDVF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Nbmutations =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(SectionsDVF, DVFgeo)))</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>SectionsDVF <span class="ot">&lt;-</span> SectionsDVF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">NbMaisons =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(SectionsDVF, Maisons))) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">NbAppart =</span> <span class="fu">lengths</span>(<span class="fu">st_intersects</span>(SectionsDVF, Appartements)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="ecriture-des-gpkg-pour-un-usage-dans-un-sig" class="level3">
+<h3 class="anchored" data-anchor-id="ecriture-des-gpkg-pour-un-usage-dans-un-sig">Ecriture des gpkg pour un usage dans un SIG</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#st_write(SectionsDVF, "SectionsDVF.gpkg", append = FALSE)</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="co">#st_write(IRISDVF, "IRISDVF.gpkg", append = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="cartographie-thématique" class="level2">
+<h2 class="anchored" data-anchor-id="cartographie-thématique">Cartographie thématique</h2>
+<section id="cartographie-à-léchelle-des-iris" class="level3">
+<h3 class="anchored" data-anchor-id="cartographie-à-léchelle-des-iris">Cartographie à l’échelle des IRIS</h3>
+<section id="nombre-de-mutations-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-par-iris">Nombre de mutations par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nombre-de-mutations-dappartements-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-dappartements-par-iris">Nombre de mutations d’appartements par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nombre-de-mutations-de-maisons-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-de-maisons-par-iris">Nombre de mutations de maisons par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="prix-moyens-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="prix-moyens-par-iris">Prix moyens par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="prix-moyen-au-m2-par-iris" class="level4">
+<h4 class="anchored" data-anchor-id="prix-moyen-au-m2-par-iris">Prix moyen au m2 par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="cartographie-à-léchelle-des-sections-cadastrales" class="level3">
+<h3 class="anchored" data-anchor-id="cartographie-à-léchelle-des-sections-cadastrales">Cartographie à l’échelle des sections cadastrales</h3>
+<section id="nombre-de-mutations-par-sections" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-par-sections">Nombre de mutations par sections</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nombre-de-mutations-dappartements-par-sections" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-dappartements-par-sections">Nombre de mutations d’appartements par sections</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nombre-de-mutations-de-maisons-par-iris-1" class="level4">
+<h4 class="anchored" data-anchor-id="nombre-de-mutations-de-maisons-par-iris-1">Nombre de mutations de maisons par IRIS</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="prix-moyens-par-section-cadastrale" class="level4">
+<h4 class="anchored" data-anchor-id="prix-moyens-par-section-cadastrale">Prix moyens par section cadastrale</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="prix-moyen-au-m2-par-section-cadastrale" class="level4">
+<h4 class="anchored" data-anchor-id="prix-moyen-au-m2-par-section-cadastrale">Prix moyen au m2 par section cadastrale</h4>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="histogramme-de-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="histogramme-de-distribution">Histogramme de distribution</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>my_breaks <span class="ot">&lt;-</span> <span class="fu">hist</span>(SectionsDVF<span class="sc">$</span>Prixm2,<span class="at">breaks=</span><span class="dv">100</span>, <span class="at">plot=</span><span class="cn">FALSE</span>)<span class="sc">$</span>breaks   </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>my_colors <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="st">"#006228"</span>, <span class="fu">length</span>(my_breaks))      </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>my_colors[my_breaks <span class="sc">&gt;</span> <span class="dv">1500</span> <span class="sc">&amp;</span> my_breaks <span class="sc">&lt;=</span> <span class="dv">2000</span>] <span class="ot">&lt;-</span> <span class="st">"#6AAB44"</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>my_colors[my_breaks <span class="sc">&gt;</span> <span class="dv">2000</span> <span class="sc">&amp;</span> my_breaks <span class="sc">&lt;=</span> <span class="dv">2500</span>] <span class="ot">&lt;-</span> <span class="st">"#D7E88D"</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>my_colors[my_breaks <span class="sc">&gt;</span> <span class="dv">2500</span> <span class="sc">&amp;</span> my_breaks <span class="sc">&lt;=</span> <span class="dv">3000</span>] <span class="ot">&lt;-</span> <span class="st">"#F6DE90"</span></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>my_colors[my_breaks <span class="sc">&gt;</span> <span class="dv">3000</span> <span class="sc">&amp;</span> my_breaks <span class="sc">&lt;=</span> <span class="dv">3500</span>] <span class="ot">&lt;-</span> <span class="st">"#E78200"</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>my_colors[my_breaks <span class="sc">&gt;</span> <span class="dv">3500</span>] <span class="ot">&lt;-</span> <span class="st">"#A51122"</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(SectionsDVF<span class="sc">$</span>Prixm2,                                        </span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks =</span> my_breaks,</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">""</span>,</span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Prix moyen au m2"</span>,</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> my_colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="lissage-spatial-des-mutations" class="level2">
+<h2 class="anchored" data-anchor-id="lissage-spatial-des-mutations">Lissage spatial des mutations</h2>
+<section id="lissage-spatial-de-toutes-les-mutations-de-la-période" class="level3">
+<h3 class="anchored" data-anchor-id="lissage-spatial-de-toutes-les-mutations-de-la-période">Lissage spatial de toutes les mutations de la période</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>DVFgeolissage <span class="ot">&lt;-</span> DVFgeo </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="calcul-des-indicateurs-pour-paramétrer-le-lissage" class="level3">
+<h3 class="anchored" data-anchor-id="calcul-des-indicateurs-pour-paramétrer-le-lissage">Calcul des indicateurs pour paramétrer le lissage</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul sur les plus proches voisins</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>listPPV <span class="ot">&lt;-</span> <span class="fu">knearneigh</span>(DVFgeolissage, <span class="at">k =</span> <span class="dv">1</span>) <span class="co"># pour connaître le plus proche voisin de chaque mutation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in knearneigh(DVFgeolissage, k = 1): knearneigh: identical points found</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in knearneigh(DVFgeolissage, k = 1): knearneigh: kd_tree not available
+for identical points</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>PPV <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(listPPV, <span class="at">row.names =</span> DVFgeolissage<span class="sc">$</span>id) <span class="co"># pour convertir l'objet knn en objet nb</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>distPPV <span class="ot">&lt;-</span> <span class="fu">nbdists</span>(PPV, DVFgeolissage) <span class="co"># pour connaître la distance entre plus proches voisins</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">as.data.frame</span>(<span class="fu">t</span>(<span class="fu">as.matrix</span>(<span class="fu">summary</span>(<span class="fu">unlist</span>(distPPV))))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Min. 1st Qu. Median     Mean  3rd Qu.     Max.
+1    0       0      0 13.64749 11.23015 1026.584</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(<span class="fu">unlist</span>(distPPV), <span class="at">nclass =</span> <span class="dv">200</span>,</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Distance au plus proche voisin"</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"black"</span>, <span class="at">border =</span> <span class="st">"white"</span>, <span class="at">xlab =</span> <span class="st">"Distance"</span>, <span class="at">ylab =</span> <span class="st">"Fréquence"</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">150</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-38-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#calcul du test de Moran</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(DVFgeolissage<span class="sc">$</span>prixm2, <span class="at">listw =</span> <span class="fu">nb2listw</span>(PPV))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  DVFgeolissage$prixm2  
+weights: nb2listw(PPV)    
+
+Moran I statistic standard deviate = 101.17, p-value &lt;
+0.00000000000000022
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+    0.50668952554    -0.00001791184     0.00002508380 </code></pre>
+</div>
+</div>
+</section>
+<section id="cartographie-du-lissage-spatial" class="level3">
+<h3 class="anchored" data-anchor-id="cartographie-du-lissage-spatial">Cartographie du lissage spatial</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-40-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="lissage-spatial-par-années" class="level3">
+<h3 class="anchored" data-anchor-id="lissage-spatial-par-années">Lissage spatial par années</h3>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="série-de-cartes-lissées" class="level3">
+<h3 class="anchored" data-anchor-id="série-de-cartes-lissées">Série de cartes lissées</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># pour ne garder que la commmune de Rennes</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>CommuneRennes <span class="ot">&lt;-</span> Communes <span class="sc">%&gt;%</span> <span class="fu">filter</span>(NOM_COM <span class="sc">==</span> <span class="st">"Rennes"</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pour ne garder que les IRIS de la commmune de Rennes</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>IRISRennes <span class="ot">&lt;-</span> IRIS <span class="sc">%&gt;%</span> <span class="fu">filter</span>(com_name <span class="sc">==</span> <span class="st">"Rennes"</span>)</span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># pour ne garder que les mutations correspondant à des appartements dans Rennes Métropole (dans un premier temps)</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>MutationsApptRM <span class="ot">&lt;-</span> DVFgeo <span class="sc">%&gt;%</span> <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">"Appartement"</span>)</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pour créer une liste d'années, dans l'ordre</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>MutationsApptRM<span class="ot">&lt;-</span>MutationsApptRM[<span class="fu">order</span>(MutationsApptRM<span class="sc">$</span>annee, <span class="at">decreasing =</span> <span class="cn">FALSE</span>), ]</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>ListAnnees <span class="ot">&lt;-</span> <span class="fu">unique</span>(MutationsApptRM<span class="sc">$</span>annee)</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a><span class="co"># pour définir comme emprise pour le lissage, l'étendue de Rennes avec une zone tampon de 0,5 km autour afin d'englober les mutations limitrophes et réduire l'effet de bord</span></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>EmpriseRennes <span class="ot">&lt;-</span> <span class="fu">as.owin</span>(<span class="fu">st_buffer</span>(<span class="fu">st_geometry</span>(CommuneRennes), <span class="dv">1000</span>))</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Création d'une palette de couleurs</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#fff7f3"</span>, <span class="st">"#fee1d3"</span>, <span class="st">"#fcbea5"</span>, <span class="st">"#fc9777"</span>, <span class="st">"#fb7050"</span>, <span class="st">"#f14432"</span>, <span class="st">"#d42020"</span>, <span class="st">"#ad1016"</span>, <span class="st">"#67000d"</span>, <span class="st">"#480000"</span>, <span class="st">"#300000"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Paramétrage des marges pour insérer le titre général et les titres de chaque carte</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">oma =</span> <span class="fu">c</span>(<span class="fl">3.5</span>,<span class="dv">0</span>,<span class="dv">3</span>,<span class="dv">0</span>)<span class="sc">+</span><span class="fl">0.1</span>, <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>, <span class="fl">1.2</span>, <span class="fl">0.5</span>))</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pour découper la fenêtre en 2 lignes et 3 colonnes (6 années)</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">3</span>))</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a><span class="co"># boucle pour produire et cartographier une surface lissée par année </span></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> ListAnnees){</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Recuperation des jeux de données par année</span></span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>  fichier <span class="ot">&lt;-</span> MutationsApptRM[<span class="fu">which</span>(MutationsApptRM<span class="sc">$</span>annee <span class="sc">==</span> i),]</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pour récupérer les coordonnées des mutations</span></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>  pts <span class="ot">&lt;-</span> <span class="fu">st_coordinates</span>(<span class="fu">st_geometry</span>(fichier))</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pour creer un objet ppp (format spatstat) et y integrer dedans l'emprise et les valeurs a lisser (prix au m²)</span></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>  fichier.ppp <span class="ot">&lt;-</span> <span class="fu">ppp</span>(pts[,<span class="dv">1</span>], pts[,<span class="dv">2</span>], <span class="at">window =</span> EmpriseRennes, <span class="at">marks =</span> fichier<span class="sc">$</span>prixm2)</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pour calculer la surface lissee (rayon lissage : 500 m et resolution spatiale de l'image : 1000m²)</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>  cartelissee <span class="ot">&lt;-</span> <span class="fu">Smooth</span>(fichier.ppp, <span class="at">sigma =</span> <span class="dv">500</span>, <span class="at">weights =</span> fichier.ppp<span class="sc">$</span>marks, <span class="at">eps =</span> <span class="fu">sqrt</span>(<span class="dv">1000</span>))</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Conversion de la surface lissée au format raster</span></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>  cartelissee.raster <span class="ot">&lt;-</span> <span class="fu">rast</span>(cartelissee)</span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crs</span>(cartelissee.raster) <span class="ot">&lt;-</span> <span class="fu">st_crs</span>(CommuneRennes)<span class="sc">$</span>srid <span class="co"># pour spécifier un SCR à l'objet raster</span></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>  cartelissee.raster <span class="ot">&lt;-</span> <span class="fu">mask</span>(cartelissee.raster, CommuneRennes) <span class="co"># découpage sur emprise Rennes</span></span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Définition manuelle des seuils</span></span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>  bks <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">min</span>(<span class="fu">values</span>(cartelissee.raster), <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">1500</span>, <span class="dv">2000</span>, <span class="dv">2200</span>, <span class="dv">2400</span>, <span class="dv">2800</span>, <span class="dv">3000</span>, <span class="dv">3200</span>, <span class="dv">3500</span>, <span class="dv">4000</span>, <span class="dv">10000</span>)</span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># reclassification de la surface lissée</span></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>  cartelissee.reclass <span class="ot">&lt;-</span> <span class="fu">classify</span>(cartelissee.raster, <span class="at">rcl =</span> bks)</span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># vectorisation de la surface reclassée</span></span>
+<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a>  cartelissee.vecteur <span class="ot">&lt;-</span> <span class="fu">st_as_sf</span>(<span class="fu">as.polygons</span>(cartelissee.reclass))</span>
+<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># trier les valeurs</span></span>
+<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a>  cartelissee.vecteur <span class="ot">&lt;-</span> cartelissee.vecteur[<span class="fu">order</span>(cartelissee.vecteur<span class="sc">$</span>lyr<span class="fl">.1</span>, <span class="at">decreasing =</span> <span class="cn">FALSE</span>), ]</span>
+<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Tracer la carte</span></span>
+<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="fu">st_geometry</span>(CommuneRennes), <span class="at">border =</span> <span class="st">"white"</span>, <span class="at">bg =</span> <span class="st">"grey90"</span>)</span>
+<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">typoLayer</span>(<span class="at">x =</span> cartelissee.vecteur, <span class="at">var =</span> <span class="st">"lyr.1"</span>, <span class="at">col =</span> cols, <span class="at">lwd =</span> <span class="fl">0.1</span>,</span>
+<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">border =</span> <span class="cn">NA</span>, <span class="at">legend.pos =</span> <span class="st">"n"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-44"><a href="#cb50-44" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-45"><a href="#cb50-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(<span class="fu">st_geometry</span>(IRISRennes), <span class="at">border =</span> <span class="fu">adjustcolor</span>(<span class="st">"white"</span>, <span class="at">alpha.f =</span> <span class="fl">0.5</span>), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">lwd =</span> <span class="fl">0.01</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-46"><a href="#cb50-46" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-47"><a href="#cb50-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">title</span>(<span class="at">main =</span> <span class="fu">paste</span>(<span class="st">""</span>, i, <span class="at">sep =</span> <span class="st">""</span>))</span>
+<span id="cb50-48"><a href="#cb50-48" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb50-49"><a href="#cb50-49" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 689 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 732 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 844 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 533 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1063 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Numerical underflow detected: sigma is probably too small</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1262 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1110 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1266 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: 1134 points were rejected as lying outside the specified window</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: data contain duplicated points</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">barscale</span>(<span class="at">lwd =</span> <span class="fl">1.5</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">pos =</span> <span class="st">"bottomright"</span>, <span class="at">style =</span> <span class="st">"pretty"</span>, <span class="at">unit =</span> <span class="st">"m"</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pour afficher le titre principal et la source</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Prix moyen au m² des appartements à Rennes de 2014 à 2022"</span>, <span class="at">cex =</span> <span class="dv">1</span>, <span class="at">side =</span> <span class="dv">3</span>, <span class="at">line =</span> <span class="dv">1</span>, <span class="at">adj =</span> <span class="fl">0.5</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"   Sources : IGN et DGFip - Rayon de lissage : 500 m</span><span class="sc">\n</span><span class="st">   et résolution : 1000 m²"</span>, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="dv">1</span>, <span class="at">adj =</span> <span class="dv">0</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Affichage de la légende (dans une nouvelle fenêtre graphique)</span></span>
+<span id="cb70-8"><a href="#cb70-8" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">fig =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">new =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb70-9"><a href="#cb70-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb70-10"><a href="#cb70-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-11"><a href="#cb70-11" aria-hidden="true" tabindex="-1"></a><span class="fu">legendChoro</span>(</span>
+<span id="cb70-12"><a href="#cb70-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pos =</span> <span class="st">"bottomright"</span>,</span>
+<span id="cb70-13"><a href="#cb70-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">title.txt =</span> <span class="st">""</span>,</span>
+<span id="cb70-14"><a href="#cb70-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">breaks =</span> bks, </span>
+<span id="cb70-15"><a href="#cb70-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">nodata =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb70-16"><a href="#cb70-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">values.rnd =</span> <span class="sc">-</span><span class="dv">1</span>,</span>
+<span id="cb70-17"><a href="#cb70-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> cols,</span>
+<span id="cb70-18"><a href="#cb70-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">border =</span> <span class="st">"white"</span>,</span>
+<span id="cb70-19"><a href="#cb70-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">horiz =</span> <span class="cn">TRUE</span></span>
+<span id="cb70-20"><a href="#cb70-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="classification-statistique" class="level2">
+<h2 class="anchored" data-anchor-id="classification-statistique">Classification statistique</h2>
+<section id="préparation-du-jeu-de-données" class="level3">
+<h3 class="anchored" data-anchor-id="préparation-du-jeu-de-données">Préparation du jeu de données</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>IRISDVF <span class="ot">&lt;-</span> IRISDVF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">propmaison =</span> (NbMaisons <span class="sc">/</span> Nbmutations <span class="sc">*</span><span class="dv">100</span>),</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">propappart =</span> (NbAppart <span class="sc">/</span> Nbmutations <span class="sc">*</span><span class="dv">100</span>))</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>DVFRMCAH <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(IRISDVF) </span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>DVFRMCAH <span class="ot">&lt;-</span> DVFRMCAH <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>() </span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>CAHdf <span class="ot">&lt;-</span> DVFRMCAH <span class="sc">%&gt;%</span> <span class="fu">select</span>(Nbmutations, Prix, Prixm2, Surface, propmaison, propappart)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="variables-centrées-réduites" class="level3">
+<h3 class="anchored" data-anchor-id="variables-centrées-réduites">Variables centrées-réduites</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>CAH <span class="ot">&lt;-</span> <span class="fu">scale</span>(CAHdf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="réalisez-lacp" class="level3">
+<h3 class="anchored" data-anchor-id="réalisez-lacp">Réalisez l’ACP</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>pca_result <span class="ot">&lt;-</span> <span class="fu">PCA</span>(CAH, <span class="at">graph =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-46-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="réalisez-une-cah-sur-les-composantes-principales-cp" class="level3">
+<h3 class="anchored" data-anchor-id="réalisez-une-cah-sur-les-composantes-principales-cp">Réalisez une CAH sur les composantes principales (CP)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>cah_result <span class="ot">&lt;-</span> <span class="fu">hclust</span>(<span class="fu">dist</span>(CAH)) </span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">cutree</span>(cah_result, <span class="at">k =</span> <span class="dv">6</span>) </span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>DVFRMCAH<span class="sc">$</span>Cluster <span class="ot">&lt;-</span> clusters </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="afficher-le-dendrogramme-le-résultat-de-la-cah" class="level3">
+<h3 class="anchored" data-anchor-id="afficher-le-dendrogramme-le-résultat-de-la-cah">Afficher le dendrogramme (le résultat de la CAH)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co">#fviz_dend(cah_result, k_col = 5) # k_col spécifie le nombre de groupes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="tableau-reapitulatif-des-groupes" class="level3">
+<h3 class="anchored" data-anchor-id="tableau-reapitulatif-des-groupes">Tableau reapitulatif des groupes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>RecapCAHIRIS <span class="ot">&lt;-</span> DVFRMCAH <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(Cluster) <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">NbIRIS=</span> <span class="fu">n</span>(), <span class="at">NbMutationsmoyen =</span> <span class="fu">mean</span>(Nbmutations), <span class="at">Prixmoyen =</span> <span class="fu">mean</span>(Prix), <span class="at">Prixm2moyen =</span> <span class="fu">mean</span>(Prixm2), <span class="at">Surfacemoyenne =</span> <span class="fu">mean</span>(Surface), <span class="at">PropMaison =</span> <span class="fu">mean</span>(propmaison), <span class="at">PropAppart=</span> <span class="fu">mean</span>(propappart))</span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(RecapCAHIRIS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 8
+  Cluster NbIRIS NbMutationsmoyen Prixmoyen Prixm2moyen Surfacemoyenne
+    &lt;int&gt;  &lt;int&gt;            &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;
+1       1     37             538    194160.       3284.           60.2
+2       2     49             360.   222590.       2464.           91.6
+3       3     26             366.   259554.       3343.           76.7
+4       4     29             187.   153990.       2323.           68.0
+5       5      6             102.   376859.       3144.          123. 
+6       6     23             120.   250797.       2409.          106. 
+# ℹ 2 more variables: PropMaison &lt;dbl&gt;, PropAppart &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="graphique-de-variations-à-la-moyenne" class="level3">
+<h3 class="anchored" data-anchor-id="graphique-de-variations-à-la-moyenne">Graphique de variations à la moyenne</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Création des moyennes du groupe</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>RecapCAHIRIS <span class="ot">&lt;-</span> RecapCAHIRIS <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Moy_Prix =</span> <span class="fu">mean</span>(IRISDVF<span class="sc">$</span>Prix),   </span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">Moy_Prixm2 =</span> <span class="fu">mean</span>(IRISDVF<span class="sc">$</span>Prixm2),</span>
+<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">Moy_PropMaisons =</span> <span class="fu">mean</span>(IRISDVF<span class="sc">$</span>propmaison), </span>
+<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">Moy_PropApparts =</span> <span class="fu">mean</span>(IRISDVF<span class="sc">$</span>propappart),</span>
+<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">Moy_Surface =</span> <span class="fu">mean</span>(IRISDVF<span class="sc">$</span>Surface)</span>
+<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a>                                    )   </span>
+<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Calcul des différences à la moyenn</span></span>
+<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a>SyntheseCAHEPCI <span class="ot">&lt;-</span> RecapCAHIRIS <span class="sc">%&gt;%</span> </span>
+<span id="cb78-14"><a href="#cb78-14" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">mutate</span>(<span class="at">Prix=</span>(Prixmoyen<span class="sc">-</span> Moy_Prix)<span class="sc">/</span>Moy_Prix<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb78-15"><a href="#cb78-15" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Prixm2=</span>(Prixm2moyen<span class="sc">-</span> Moy_Prixm2)<span class="sc">/</span>Moy_Prixm2<span class="sc">*</span><span class="dv">100</span>,</span>
+<span id="cb78-16"><a href="#cb78-16" aria-hidden="true" tabindex="-1"></a>                          <span class="at">PropMaison=</span>(PropMaison<span class="sc">-</span>Moy_PropMaisons)<span class="sc">/</span>Moy_PropMaisons<span class="sc">*</span><span class="dv">100</span>,                     <span class="at">PropAppart=</span>(PropAppart<span class="sc">-</span>Moy_PropApparts)<span class="sc">/</span>Moy_PropApparts<span class="sc">*</span><span class="dv">100</span>,                     <span class="at">Surface=</span>(Surfacemoyenne<span class="sc">-</span>Moy_Surface)<span class="sc">/</span>Moy_Surface<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb78-17"><a href="#cb78-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-18"><a href="#cb78-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-19"><a href="#cb78-19" aria-hidden="true" tabindex="-1"></a>SyntheseCAHEPCI <span class="ot">&lt;-</span> SyntheseCAHEPCI <span class="sc">%&gt;%</span> <span class="fu">select</span>(Cluster, Prix, Prixm2, PropMaison, PropAppart, Surface) </span>
+<span id="cb78-20"><a href="#cb78-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-21"><a href="#cb78-21" aria-hidden="true" tabindex="-1"></a>gather <span class="ot">&lt;-</span> SyntheseCAHEPCI <span class="sc">%&gt;%</span> <span class="fu">gather</span>(<span class="at">key=</span>variable, <span class="at">value=</span> <span class="st">"value"</span>, Prix<span class="sc">:</span>Surface)</span>
+<span id="cb78-22"><a href="#cb78-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-23"><a href="#cb78-23" aria-hidden="true" tabindex="-1"></a>gather<span class="sc">$</span>Cluster <span class="ot">&lt;-</span> <span class="fu">as.character</span>(gather<span class="sc">$</span>Cluster) </span>
+<span id="cb78-24"><a href="#cb78-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-25"><a href="#cb78-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gather, <span class="fu">aes</span>(<span class="at">x=</span>variable, <span class="at">y=</span>value, <span class="at">fill=</span>Cluster)) <span class="sc">+</span></span>
+<span id="cb78-26"><a href="#cb78-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">stat =</span> <span class="st">"identity"</span>) <span class="sc">+</span>   <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb78-27"><a href="#cb78-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values=</span><span class="fu">c</span>(<span class="st">"#ff851b"</span>,<span class="st">"#39a699"</span>,<span class="st">"#FF4136"</span>,<span class="st">"#f9c155"</span>,<span class="st">"#1f78b4"</span>,<span class="st">"#2cb1e3"</span>)) <span class="sc">+</span></span>
+<span id="cb78-28"><a href="#cb78-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Variation a la moyenne (%)"</span>) <span class="sc">+</span>   </span>
+<span id="cb78-29"><a href="#cb78-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span>   </span>
+<span id="cb78-30"><a href="#cb78-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb78-31"><a href="#cb78-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Cluster, <span class="at">ncol =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="cartographie-de-la-cah" class="level3">
+<h3 class="anchored" data-anchor-id="cartographie-de-la-cah">Cartographie de la CAH</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>IRISDVFCAH <span class="ot">&lt;-</span> <span class="fu">left_join</span>(IRIS, DVFRMCAH, <span class="at">by =</span> <span class="st">"iris_code"</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="fl">1.2</span>, <span class="dv">2</span>))</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mf_theme</span>(<span class="st">"default"</span>)   </span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="fu">mf_map</span>(   <span class="at">x =</span> IRISDVFCAH,   <span class="at">var =</span> <span class="st">"Cluster"</span>,   <span class="at">type =</span> <span class="st">"typo"</span>,   </span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">pal =</span> <span class="fu">c</span>(<span class="st">"#FF4136"</span>,<span class="st">"#f9c155"</span>,<span class="st">"#416979"</span>,<span class="st">"#39a699"</span>,<span class="st">"#FF851B"</span>,<span class="st">"#2cb1e3"</span>),  </span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">val_order =</span> <span class="fu">c</span>(<span class="st">"6"</span>,<span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"2"</span>, <span class="st">"5"</span>, <span class="st">"1"</span>   ), </span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">border =</span> <span class="st">"white"</span>,   <span class="at">lwd =</span> <span class="fl">0.2</span>,   <span class="at">leg_pos =</span> <span class="st">"topright"</span>,   </span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">leg_title =</span> <span class="st">"Typologie </span><span class="sc">\n</span><span class="st"> des sous-marchés"</span>)</span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a><span class="fu">mf_label</span>(<span class="at">x =</span> Communes[Communes<span class="sc">$</span>POPULATION <span class="sc">&gt;</span><span class="dv">10000</span>, ], <span class="at">var =</span> <span class="st">"NOM_COM"</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">halo =</span> <span class="cn">TRUE</span>, <span class="at">r =</span> <span class="fl">0.1</span>)</span>
+<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-15"><a href="#cb79-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-16"><a href="#cb79-16" aria-hidden="true" tabindex="-1"></a><span class="fu">mf_layout</span>(   <span class="at">title =</span> <span class="st">"Sous-marchés de l'immobilier résidentiel"</span>,   <span class="at">credits =</span> <span class="fu">paste0</span>(     <span class="st">"Sources: DGFIP-IGN, 2023"</span>   ) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="DVFRM_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
